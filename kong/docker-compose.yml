@@ -13,7 +13,7 @@ services:
     environment:
       POSTGRES_USER: kong
       POSTGRES_DB: kong
-      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_PASSWORD: kong
     ports:
       - "5432:5432"
     healthcheck:
@@ -43,10 +43,18 @@ services:
       - kong-net
     environment:
       KONG_PG_HOST: kong-database
+      KONG_DATABASE: postgres
+      KONG_PG_USER: kong
+      KONG_PG_PASSWORD: kong
       KONG_PROXY_LISTEN: 0.0.0.0:8000
       KONG_PROXY_LISTEN_SSL: 0.0.0.0:8443
       KONG_ADMIN_LISTEN: 0.0.0.0:8001
-      DNS_RESOLVER: 0.0.0.0:8600
+      KONG_DNS_RESOLVER: 35.202.68.233:8600
+      KONG_CASSANDRA_CONTACT_POINTS: kong-database
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr 
     depends_on:
       - kong-migration
       - kong-database
@@ -58,6 +66,24 @@ services:
     ports:
       - "8001:8001"
       - "8000:8000"
+      - "12201:12201/udp"
+      - "12201:12201"
+      - "8443:8443" 
+      - "8444:8444"
+      - "8301"
+      - "8301/udp"
+      - "8500"
+      - "8300"
+      - "8302"
+      - "8302/udp"
+      - "8400"
+      - "8600"
+      - "8600/udp"
+      - "53"
+      - "53/udp"
+      - "7956:7956"  
+      - "7956:7956/udp"  
+      - "9090:9090"  
 
   konga-prepare:
     image: pantsel/konga:next
